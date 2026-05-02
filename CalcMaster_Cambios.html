@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalcMaster — Resumen de Cambios</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0d0d0d;
+    color: #e0e0e0;
+    padding: 40px 20px;
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #00FF41;
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  .header h1 {
+    font-size: 2.4rem;
+    color: #00FF41;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+  }
+  .header .subtitle {
+    color: #FF9F00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
+  .header .meta {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+
+  /* Section */
+  section {
+    margin-bottom: 40px;
+  }
+  section h2 {
+    font-size: 1.15rem;
+    color: #FF9F00;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-left: 4px solid #FF9F00;
+    padding-left: 12px;
+    margin-bottom: 18px;
+  }
+
+  /* Cards */
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  .card .card-title {
+    font-weight: 700;
+    color: #00FF41;
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .card .card-title.danger { color: #FF4444; }
+  .card .card-title.warning { color: #FF9F00; }
+  .card p {
+    color: #ccc;
+    font-size: 0.92rem;
+  }
+  .card .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .badge-fix    { background: #1a3a1a; color: #00FF41; border: 1px solid #00FF41; }
+  .badge-feat   { background: #3a2a0a; color: #FF9F00; border: 1px solid #FF9F00; }
+  .badge-clean  { background: #1a1a3a; color: #7b7bff; border: 1px solid #7b7bff; }
+  .badge-sec    { background: #3a1a1a; color: #FF4444; border: 1px solid #FF4444; }
+
+  /* File diff block */
+  .file-block {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .file-block .file-header {
+    background: #1f1f1f;
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: #FF9F00;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .file-block pre {
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    color: #ccc;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .add  { color: #00FF41; }
+  .del  { color: #FF4444; }
+  .neu  { color: #888; }
+  .hdr  { color: #7b7bff; }
+
+  /* Summary table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.88rem;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #1f1f1f;
+    color: #FF9F00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #333;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #222;
+    color: #ccc;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-family: 'JetBrains Mono', monospace; color: #00FF41; font-size: 0.8rem; }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+    text-align: center;
+    color: #444;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; color: #111; padding: 20px; }
+    .header h1 { color: #007700; }
+    .header .subtitle { color: #cc6600; }
+    section h2 { color: #cc6600; border-left-color: #cc6600; }
+    .card { border-color: #ddd; background: #f9f9f9; }
+    .card .card-title { color: #007700; }
+    .card p { color: #333; }
+    .file-block { border-color: #ddd; background: #f5f5f5; }
+    .file-block .file-header { background: #eee; color: #cc6600; border-color: #ddd; }
+    .file-block pre { background: #f5f5f5; color: #333; }
+    .add  { color: #006600; }
+    .del  { color: #cc0000; }
+    .neu  { color: #666; }
+    .hdr  { color: #5555cc; }
+    td:first-child { color: #006600; }
+    th { color: #cc6600; background: #eee; }
+    .footer { color: #999; }
+    .badge-fix    { background: #e0f0e0; color: #006600; border-color: #006600; }
+    .badge-feat   { background: #fff0d0; color: #cc6600; border-color: #cc6600; }
+    .badge-clean  { background: #e0e0f0; color: #5555cc; border-color: #5555cc; }
+    .badge-sec    { background: #f0e0e0; color: #cc0000; border-color: #cc0000; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="header">
+    <h1>CALCMASTER</h1>
+    <div class="subtitle">▸ REPORTE DE CAMBIOS Y CORRECCIONES</div>
+    <div class="meta">Generado el 2 de mayo de 2026 &nbsp;|&nbsp; Proyecto Android · Kotlin · Jetpack Compose</div>
+  </div>
+
+  <!-- ═══ RESUMEN EJECUTIVO ═══ -->
+  <section>
+    <h2>Resumen ejecutivo</h2>
+    <p style="color:#ccc; font-size:0.93rem; margin-bottom:16px;">
+      Se realizó una revisión completa del proyecto CalcMaster. Se identificaron y corrigieron 6 bugs, se eliminaron 2 bloques de código muerto, se aplicaron 2 correcciones de seguridad y se implementaron 5 mejoras funcionales de UX. A continuación el detalle completo por archivo.
+    </p>
+    <table>
+      <tr>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Archivos afectados</th>
+      </tr>
+      <tr>
+        <td>BUG FIX</td>
+        <td>6</td>
+        <td>MainActivity.kt</td>
+      </tr>
+      <tr>
+        <td>SEGURIDAD</td>
+        <td>2</td>
+        <td>AndroidManifest.xml, backup_rules.xml, data_extraction_rules.xml</td>
+      </tr>
+      <tr>
+        <td>LIMPIEZA</td>
+        <td>2</td>
+        <td>Color.kt, AndroidManifest.xml</td>
+      </tr>
+      <tr>
+        <td>MEJORA UX</td>
+        <td>5</td>
+        <td>MainActivity.kt</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ═══ BUGS CORREGIDOS ═══ -->
+  <section>
+    <h2>Bugs corregidos</h2>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #1</div>
+      <div class="card-title">División por cero retornaba NaN</div>
+      <p><strong>Problema:</strong> Al dividir entre 0, el display mostraba "NaN" — un texto técnico sin sentido para el usuario.<br>
+      <strong>Solución:</strong> Ahora detecta el caso <code>val2 == 0.0</code>, pone <code>result = null</code> y muestra <code>DIV/0</code> en rojo. Las operaciones quedan bloqueadas hasta presionar C.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #2</div>
+      <div class="card-title">Resultado con decimales excesivos / imprecisos</div>
+      <p><strong>Problema:</strong> Se usaba <code>"%.2f".format(result)</code> fijo, por lo que <code>1 / 2 = 0.50</code> en vez de <code>0.5</code>.<br>
+      <strong>Solución:</strong> Se usa <code>"%.6f".format(result).trimEnd('0').trimEnd('.')</code> — elimina ceros innecesarios y muestra solo la precisión necesaria.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #3</div>
+      <div class="card-title">Overflow silencioso del display</div>
+      <p><strong>Problema:</strong> No había límite en la longitud del número ingresado. Números de 20+ dígitos desbordaban el display sin aviso.<br>
+      <strong>Solución:</strong> Límite estricto de 15 caracteres en la entrada numérica.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #4</div>
+      <div class="card-title">Estado de error bloqueaba la aplicación</div>
+      <p><strong>Problema:</strong> Tras un error (NaN), la app quedaba en estado corrupto — presionar números seguía acumulando sobre el error.<br>
+      <strong>Solución:</strong> El flag <code>isError</code> detecta el estado; al presionar cualquier dígito, limpia el error y comienza fresco. Los operadores están deshabilitados en modo error.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #5</div>
+      <div class="card-title">No había botón de punto decimal</div>
+      <p><strong>Problema:</strong> La calculadora no permitía ingresar números decimales como <code>3.14</code> — solo podía mostrarlos como resultado.<br>
+      <strong>Solución:</strong> Se agrega el botón <code>.</code> con lógica que previene duplicación (si ya hay un punto, no agrega otro).</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-fix">BUG FIX #6</div>
+      <div class="card-title">No había forma de corregir un dígito sin limpiar todo</div>
+      <p><strong>Problema:</strong> Si el usuario escribía <code>1234</code> y quería borrar el 4, debía presionar C y empezar desde cero.<br>
+      <strong>Solución:</strong> Se agrega el botón <code>⌫</code> que borra el último carácter. Si queda vacío, retorna a <code>"0"</code>.</p>
+    </div>
+  </section>
+
+  <!-- ═══ CORRECCIONES DE SEGURIDAD ═══ -->
+  <section>
+    <h2>Correcciones de seguridad</h2>
+
+    <div class="card">
+      <div class="badge badge-sec">SEGURIDAD #1</div>
+      <div class="card-title danger">Vault expuesto en backup automático de Android</div>
+      <p><strong>Problema:</strong> Los datos del HELIOS TERMINAL se guardaban en SharedPreferences (<code>helios_vault</code>). Con <code>allowBackup=true</code> y reglas vacías, Android sincronizaba esos datos sin cifrar a Google Drive automáticamente.<br>
+      <strong>Solución:</strong> Se configuraron explícitamente <code>backup_rules.xml</code> y <code>data_extraction_rules.xml</code> para excluir <code>helios_vault.xml</code> de tanto cloud backup como device-to-device transfer.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-sec">SEGURIDAD #2</div>
+      <div class="card-title danger">Permiso VIBRATE declarado sin uso</div>
+      <p><strong>Problema:</strong> <code>AndroidManifest.xml</code> declaraba <code>android.permission.VIBRATE</code> pero el código nunca lo usa (solo utiliza haptic feedback que no requiere permiso).<br>
+      <strong>Solución:</strong> Permiso eliminado. Principio de mínimo privilegio.</p>
+    </div>
+  </section>
+
+  <!-- ═══ LIMPIEZA DE CÓDIGO ═══ -->
+  <section>
+    <h2>Limpieza de código</h2>
+
+    <div class="card">
+      <div class="badge badge-clean">LIMPIEZA #1</div>
+      <div class="card-title">Colores huérfanos del template inicial eliminados</div>
+      <p><strong>Problema:</strong> <code>Color.kt</code> contenía 6 variables del template por defecto de Android Studio (<code>Purple80</code>, <code>PurpleGrey80</code>, <code>Pink80</code>, <code>Purple40</code>, <code>PurpleGrey40</code>, <code>Pink40</code>) que nunca se referenciaban en ningún archivo.<br>
+      <strong>Solución:</strong> Eliminadas. Solo se mantienen los 4 colores propios: <code>HeliosGreen</code>, <code>HeliosOrange</code>, <code>HeliosBlack</code>, <code>HeliosDarkGrey</code>.</p>
+    </div>
+  </section>
+
+  <!-- ═══ MEJORAS DE UX ═══ -->
+  <section>
+    <h2>Mejoras de UX</h2>
+
+    <div class="card">
+      <div class="badge badge-feat">MEJORA #1</div>
+      <div class="card-title">Indicador visual del operador activo</div>
+      <p>El operador actual (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) ahora aparece en naranja (<code>HeliosOrange</code>) en la esquina superior derecha del display mientras se espera el segundo operando. El usuario siempre sabe qué operación está en curso.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-feat">MEJORA #2</div>
+      <div class="card-title">Font size adaptativo según longitud del número</div>
+      <p>El display ajusta automáticamente el tamaño de fuente para evitar que números largos se corten:</p>
+      <p>• ≤ 8 dígitos → <strong>64sp</strong> (tamaño original)<br>
+         • 9–12 dígitos → <strong>44sp</strong><br>
+         • &gt; 12 dígitos → <strong>32sp</strong></p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-feat">MEJORA #3</div>
+      <div class="card-title">Display de error diferenciado en rojo</div>
+      <p>Cuando ocurre un error (<code>DIV/0</code>), el texto del display cambia a <code>#FF4444</code> (rojo) para distinguirlo visualmente de un resultado normal. Al presionar C o cualquier dígito, vuelve al verde normal.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-feat">MEJORA #4</div>
+      <div class="card-title">Botón C diferenciado en rojo</div>
+      <p>El botón Clear (<code>C</code>) ahora tiene borde e icono en rojo (<code>#FF4444</code>) mediante el nuevo parámetro <code>isDanger</code> en <code>HeliosButton</code>. Comunica visualmente su naturaleza destructiva sin romper el layout.</p>
+    </div>
+
+    <div class="card">
+      <div class="badge badge-feat">MEJORA #5</div>
+      <div class="card-title">Resultados enteros con precisión correcta para números grandes</div>
+      <p>Al mostrar resultados enteros, se cambió <code>result.toInt()</code> por <code>result.toLong()</code> para soportar números grandes (hasta ~9.2 × 10¹⁸) sin overflow en Java/Kotlin.</p>
+    </div>
+  </section>
+
+  <!-- ═══ DIFFS POR ARCHIVO ═══ -->
+  <section>
+    <h2>Cambios por archivo</h2>
+
+    <div class="file-block">
+      <div class="file-header">📄 app/src/main/java/com/example/calcmaster/MainActivity.kt</div>
+      <pre><span class="hdr">@@ Estado de error y display @@</span>
+<span class="add">+ var isError by remember { mutableStateOf(false) }</span>
+<span class="add">+ val displayFontSize = when {</span>
+<span class="add">+     display.length &gt; 12 -&gt; 32.sp</span>
+<span class="add">+     display.length &gt; 8  -&gt; 44.sp</span>
+<span class="add">+     else                -&gt; 64.sp</span>
+<span class="add">+ }</span>
+
+<span class="hdr">@@ Display panel — indicador de operador activo @@</span>
+<span class="add">+ Text(</span>
+<span class="add">+     text = if (operator != null) operator!! else "",</span>
+<span class="add">+     color = colors.secondary.copy(alpha = 0.7f),</span>
+<span class="add">+     fontSize = 18.sp,</span>
+<span class="add">+ )</span>
+
+<span class="hdr">@@ Grid de botones — fila nueva con "." y "⌫" @@</span>
+<span class="del">- listOf("C", "0", "=", "+")</span>
+<span class="add">+ listOf(".", "0", "⌫", "+")</span>
+<span class="add">+ listOf("C", "", "=", "")</span>
+
+<span class="hdr">@@ Lógica botón "⌫" @@</span>
+<span class="add">+ "⌫" -&gt; {</span>
+<span class="add">+     if (!isError &amp;&amp; display != "0") {</span>
+<span class="add">+         display = if (display.length == 1) "0" else display.dropLast(1)</span>
+<span class="add">+     }</span>
+<span class="add">+ }</span>
+
+<span class="hdr">@@ Lógica botón "." @@</span>
+<span class="add">+ "." -&gt; {</span>
+<span class="add">+     if (isError) return@HeliosButton</span>
+<span class="add">+     if (shouldResetDisplay) { display = "0."; shouldResetDisplay = false }</span>
+<span class="add">+     else if (!display.contains(".")) display += "."</span>
+<span class="add">+ }</span>
+
+<span class="hdr">@@ División por cero @@</span>
+<span class="del">- "/" -&gt; if (val2 != 0.0) operand1!! / val2 else Double.NaN</span>
+<span class="add">+ "/" -&gt; if (val2 != 0.0) operand1!! / val2 else null</span>
+<span class="add">+ if (result == null) { display = "DIV/0"; isError = true }</span>
+
+<span class="hdr">@@ Formato de resultado @@</span>
+<span class="del">- display = if (result % 1 == 0.0) result.toInt().toString()</span>
+<span class="del">-           else "%.2f".format(result)</span>
+<span class="add">+ display = if (result % 1 == 0.0 &amp;&amp; result &lt; 1e9)</span>
+<span class="add">+     result.toLong().toString()</span>
+<span class="add">+ else "%.6f".format(result).trimEnd('0').trimEnd('.')</span>
+
+<span class="hdr">@@ Límite de entrada @@</span>
+<span class="add">+ } else if (display.length &lt; 15) {</span>
+<span class="add">+     display += label</span>
+<span class="add">+ }</span>
+
+<span class="hdr">@@ HeliosButton — parámetro isDanger @@</span>
+<span class="del">- fun HeliosButton(label: String, isOperator: Boolean, ...)</span>
+<span class="add">+ fun HeliosButton(label: String, isOperator: Boolean, isDanger: Boolean = false, ...)</span>
+<span class="add">+ val contentColor = when {</span>
+<span class="add">+     isDanger   -&gt; Color(0xFFFF4444)</span>
+<span class="add">+     isOperator -&gt; colors.secondary</span>
+<span class="add">+     else       -&gt; colors.primary</span>
+<span class="add">+ }</span></pre>
+    </div>
+
+    <div class="file-block">
+      <div class="file-header">📄 app/src/main/java/com/example/calcmaster/ui/theme/Color.kt</div>
+      <pre><span class="hdr">@@ Eliminados colores huérfanos del template @@</span>
+<span class="del">- val Purple80 = Color(0xFFD0BCFF)</span>
+<span class="del">- val PurpleGrey80 = Color(0xFFCCC2DC)</span>
+<span class="del">- val Pink80 = Color(0xFFEFB8C8)</span>
+<span class="del">- val Purple40 = Color(0xFF6650a4)</span>
+<span class="del">- val PurpleGrey40 = Color(0xFF625b71)</span>
+<span class="del">- val Pink40 = Color(0xFF7D5260)</span>
+
+<span class="neu">  val HeliosGreen    = Color(0xFF00FF41)  // sin cambios</span>
+<span class="neu">  val HeliosOrange   = Color(0xFFFF9F00)  // sin cambios</span>
+<span class="neu">  val HeliosBlack    = Color(0xFF0D0D0D)  // sin cambios</span>
+<span class="neu">  val HeliosDarkGrey = Color(0xFF1A1A1A)  // sin cambios</span></pre>
+    </div>
+
+    <div class="file-block">
+      <div class="file-header">📄 app/src/main/AndroidManifest.xml</div>
+      <pre><span class="hdr">@@ Permiso VIBRATE eliminado @@</span>
+<span class="del">- &lt;uses-permission android:name="android.permission.VIBRATE" /&gt;</span></pre>
+    </div>
+
+    <div class="file-block">
+      <div class="file-header">📄 app/src/main/res/xml/backup_rules.xml</div>
+      <pre><span class="hdr">@@ Excluir vault del backup @@</span>
+<span class="del">- &lt;!-- (reglas vacías — vault expuesto) --&gt;</span>
+<span class="add">+ &lt;full-backup-content&gt;</span>
+<span class="add">+     &lt;exclude domain="sharedpref" path="helios_vault.xml"/&gt;</span>
+<span class="add">+ &lt;/full-backup-content&gt;</span></pre>
+    </div>
+
+    <div class="file-block">
+      <div class="file-header">📄 app/src/main/res/xml/data_extraction_rules.xml</div>
+      <pre><span class="hdr">@@ Excluir vault de cloud backup y device transfer @@</span>
+<span class="del">- &lt;!-- (reglas vacías — vault expuesto) --&gt;</span>
+<span class="add">+ &lt;cloud-backup&gt;</span>
+<span class="add">+     &lt;exclude domain="sharedpref" path="helios_vault.xml"/&gt;</span>
+<span class="add">+ &lt;/cloud-backup&gt;</span>
+<span class="add">+ &lt;device-transfer&gt;</span>
+<span class="add">+     &lt;exclude domain="sharedpref" path="helios_vault.xml"/&gt;</span>
+<span class="add">+ &lt;/device-transfer&gt;</span></pre>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="footer">
+    CALCMASTER · REPORTE DE CAMBIOS · 2026-05-02<br>
+    Para imprimir como PDF: Ctrl+P → Destino: "Guardar como PDF" → Guardar
+  </div>
+
+</div>
+</body>
+</html>
