@@ -58,10 +58,17 @@ class CalcMasterInputMethod : InputMethodService(), LifecycleOwner, ViewModelSto
                     )
                 }
             }
+        }.also {
+            // 🔥 Fuerza a la interfaz de Compose a inicializar su tamaño y dibujarse
+            registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
+            registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         }
     }
 
     override fun onDestroy() {
+        // 🛑 Cierra los estados del ciclo de vida en orden inverso
+        registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         storeViewModel.clear()
         super.onDestroy()
