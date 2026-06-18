@@ -3,58 +3,57 @@ package com.example.calcmaster
 import android.inputmethodservice.InputMethodService
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.calcmaster.ui.theme.CalcMasterTheme
 
-class CalcMasterInputMethod : InputMethodService(), ViewModelStoreOwner, SavedStateRegistryOwner {
+class CalcMasterInputMethod : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
 
-    // --- AGREGA ESTO PARA SOLUCIONAR EL ERROR ---
-    override val lifecycle: androidx.lifecycle.Lifecycle
-        get() = androidx.lifecycle.LifecycleRegistry(this)
-    // --------------------------------------------
+    private val registryLifecycle by lazy { LifecycleRegistry(this) }
+    private val storeViewModel by lazy { ViewModelStore() }
+    private val controllerSavedState by lazy { SavedStateRegistryController.create(this) }
 
-    private val mViewModelStore = ViewModelStore()
-    private val mSavedStateRegistryController = SavedStateRegistryController.create(this)
-    
-    // ... el resto de tu código sigue igual abajo ...
+    override val lifecycle: Lifecycle 
+        get() = registryLifecycle
 
+    override val viewModelStore: ViewModelStore 
+        get() = storeViewModel
 
-    private val mViewModelStore = ViewModelStore()
-    private val mSavedStateRegistryController = SavedStateRegistryController.create(this)
-
-    override val viewModelStore: ViewModelStore
-        get() = mViewModelStore
-
-    override val savedStateRegistry: SavedStateRegistry
-        get() = mSavedStateRegistryController.savedStateRegistry
+    override val savedStateRegistry: SavedStateRegistry 
+        get() = controllerSavedState.savedStateRegistry
 
     override fun onCreate() {
-        mSavedStateRegistryController.performRestore(null)
         super.onCreate()
+        controllerSavedState.performRestore(null)
+        registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
     }
 
     override fun onCreateInputView(): View {
         return ComposeView(this).apply {
+            setViewTreeLifecycleOwner(this@CalcMasterInputMethod)
             setViewTreeViewModelStoreOwner(this@CalcMasterInputMethod)
             setViewTreeSavedStateRegistryOwner(this@CalcMasterInputMethod)
             
             setContent {
                 CalcMasterTheme {
                     HeliosSystemKeyboard(
-                        onInputText = { text ->
-                            currentInputConnection?.commitText(text, 1)
+                        onInputText = { text -> 
+                            currentInputConnection?.commitText(text, 1) 
                         },
-                        onBackspace = {
-                            currentInputConnection?.deleteSurroundingText(1, 0)
+                        onBackspace = { 
+                            currentInputConnection?.deleteSurroundingText(1, 0) 
                         },
-                        onPanic = {
-                            requestHideSelf(0)
+                        onPanic = { 
+                            requestHideSelf(0) 
                         }
                     )
                 }
@@ -63,7 +62,8 @@ class CalcMasterInputMethod : InputMethodService(), ViewModelStoreOwner, SavedSt
     }
 
     override fun onDestroy() {
+        registryLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        storeViewModel.clear()
         super.onDestroy()
-        mViewModelStore.clear()
     }
 }
